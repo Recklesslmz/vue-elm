@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <v-header></v-header>
+      <v-header  :headerProps="headerProps"></v-header>
     </div>
     <div class="tab">
       <div :class="[tabList,{tabListChecked:chooseIndex==index}]" @click="choose(index)"
@@ -22,6 +22,7 @@
   export default {
     data(){
       return {
+        headerProps: {name:'1'},
         tab: [
           {name: '商品', type: 1},
           {name: '评价', type: 1},
@@ -35,7 +36,12 @@
       document.getElementsByTagName('body')[0].style.background = '#faf5f7'
     },
     created(){
-      this.getInfo()
+
+    },
+    mounted(){
+     this.$nextTick(()=>{
+        this.getInfo()
+      })
     },
     methods: {
       choose(index){
@@ -53,7 +59,14 @@
         }
       },
       getInfo(){
-        this.$http.get('/api/goods').then((response) => {
+
+        let _this = this
+
+        this.$http.get('/api/seller').then((response) => {
+          if(response.data.errno === 0){
+            console.log(_this.headerProps)
+            _this.headerProps = response.data.data
+          }
           console.log(response)
         });
       }
