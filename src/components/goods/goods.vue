@@ -2,7 +2,8 @@
   <div class="goods">
     <div class="menu-wrapper" ref="menuWrapper">
       <ul>
-        <li class="menu-item" :class="['menu-item',{'current':currentIndex === index}]" v-for="(item,index) in foods">
+        <li class="menu-item" :class="['menu-item',{'current':currentIndex === index}]" v-for="(item,index) in foods"
+            @click="selectMenu(index,$event)">
           <span class="text">{{item.name}}</span>
         </li>
       </ul>
@@ -29,7 +30,6 @@
                   <span class="now">￥{{food.price}}</span>
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
-
               </div>
             </li>
           </ul>
@@ -89,6 +89,14 @@
           this.listHeight.push(height);
         }
         console.log(this.listHeight[11])
+      },
+      selectMenu(index, event){
+        if (!event._constructed) {
+          return;
+        }
+        let foodList = this.$refs.foodList;
+        let el = foodList[index];
+        this.foodsScroll.scrollToElement(el, 300);
       }
     },
     computed: {
@@ -120,13 +128,11 @@
       flex: 0 0 80px;
       background: #f3f5f7;
       .menu-item {
+        display: table;
         height: 54px;
         width: 56px;
-        display: table;
-        margin: {
-          left: 12px;
-        }
-      ;
+        padding: 0 12px;
+        line-height: 14px;
         border-bottom: 1px solid rgba(7, 17, 27, .2);
         .text {
           display: table-cell;
@@ -137,12 +143,12 @@
         ;
           vertical-align: middle;
         }
-        &.current{
-         background: white;
+        &.current {
+          background: white;
           position: relative;
           z-index: 10;
-          .text{
-            border:none;
+          .text {
+            border: none;
           }
         }
 
