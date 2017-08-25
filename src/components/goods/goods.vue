@@ -30,6 +30,9 @@
                   <span class="now">￥{{food.price}}</span>
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cartcontrol-wrapper">
+                  <v-cartcontrol></v-cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
@@ -38,24 +41,24 @@
 
     </div>
   </div>
-
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
-  export default{
-    data(){
+  import cartcontrol from '../cartcontrol/cartcontrol'
+  export default {
+    data() {
       return {
         foods: [],
         listHeight: [],
         scrollY: 0
       }
     },
-    created(){
+    created() {
       this.getGoods()
     },
     methods: {
-      getGoods(){
+      getGoods() {
         this.$http.get('/api/goods').then((response) => {
           if (response.data.errno === 0) {
             this.foods = response.data.data
@@ -67,7 +70,7 @@
           }
         });
       },
-      _initScroll(){
+      _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
           click: true
         })
@@ -79,7 +82,7 @@
           this.scrollY = Math.abs(Math.round(pos.y))
         })
       },
-      _calculateHeight(){
+      _calculateHeight() {
         let foodList = this.$refs.foodList
         let height = 0
         this.listHeight.push(height)
@@ -90,7 +93,7 @@
         }
         console.log(this.listHeight[11])
       },
-      selectMenu(index, event){
+      selectMenu(index, event) {
         if (!event._constructed) {
           return;
         }
@@ -100,7 +103,7 @@
       }
     },
     computed: {
-      currentIndex(){
+      currentIndex() {
         for (let i = 0; i < this.listHeight.length; i++) {
           let height1 = this.listHeight[i]
           let height2 = this.listHeight[i + 1]
@@ -112,6 +115,9 @@
         return 0
       }
 
+    },
+    components: {
+      'v-cartcontrol': cartcontrol
     }
   }
 
@@ -151,9 +157,7 @@
             border: none;
           }
         }
-
       }
-
     }
     .foods-wrapper {
       flex: 1;
@@ -180,6 +184,7 @@
         display: flex;
         margin: 18px;
         padding-bottom: 18px;
+        position: relative;
         .icon {
           flex: 0 0 57px;
           margin-right: 10px;
@@ -255,9 +260,12 @@
       .border-common {
         border-bottom: 1px solid rgba(7, 17, 27, .1);
       }
-
     }
-
   }
 
+  .cartcontrol-wrapper {
+    position: absolute;
+    right: 0;
+    bottom: 1px;
+  }
 </style>
